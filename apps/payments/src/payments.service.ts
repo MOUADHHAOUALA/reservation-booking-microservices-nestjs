@@ -5,17 +5,21 @@ import { CreateChargeDto } from '../../../libs/common/src/dto/create-charge.dto'
 
 @Injectable()
 export class PaymentsService {
-  private readonly stripe = new Stripe(
-    // @ts-ignore
-    this.configService.get('STRIPE_SECRTE_KEY'),
-    {
+  private readonly stripe: Stripe;
+
+  constructor(private readonly configService: ConfigService) {
+    const stripeSecretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+    if (!stripeSecretKey) {
+      throw new Error(
+        'STRIPE_SECRET_KEY is not defined in environment variables',
+      );
+    }
+    this.stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2025-06-30.basil',
-    },
-  );
+    });
+  }
 
-  constructor(private readonly configService: ConfigService) {}
-
-  async createChare({ card, amount }: CreateChargeDto) {
+  async createCharge({ card, amount }: CreateChargeDto) {
     const paymentMethod = await this.stripe.paymentMethods.create({
       type: 'card',
       card,

@@ -45,6 +45,3 @@ services:
 
   mongo:
     image: mongo
-    ports:
-      - '27017:27017' # <-- Add this line to expose MongoDB to host
-
