@@ -17,4 +17,7 @@ export class NotifyEmailDto {
     message: 'Email address cannot be longer than 254 characters',
   })
   email: string;
+
+  @IsString({})
+  text: string;
 }
